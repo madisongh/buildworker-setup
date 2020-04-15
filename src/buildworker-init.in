@@ -1,0 +1,43 @@
+#!/bin/sh
+set -e
+HOSTOS=`lsb_release -is`
+OSVER=`lsb_release -rs`
+HOSTCPU=`uname -m`
+PATH="$HOME/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/usr/local/bin"
+workerdir="$1"
+workeruser="$2"
+
+[ -n "$workerdir" ] || workerdir="@WORKERDIR@"
+[ -n "$workeruser" ] || workeruser="@WORKERUSER@"
+if [ ! -e /run/buildworker-settings ]; then
+    echo "Missing buildworker settings from master" >&2
+    exit 1
+fi
+
+. /run/buildworker-settings
+
+[ -d "$workderdir" ] || mkdir -p "$workderdir"
+if [ -n "$workeruser" ]; then
+    chown -R $workeruser:$workeruser "$workderdir"
+    AS_WORKER="su -l $workeruser --"
+else
+    AS_WORKER=
+fi
+
+rm -f @ETCDEFAULTDIR@/buildworker
+cat > @ETCDEFAULTDIR@/buildworker <<EOF
+MASTER=$MASTER
+AWS_METADATA_SERVICE_TIMEOUT=5
+AWS_METADATA_SERVICE_NUM_ATTEMPTS=10
+AWS_DEFAULT_REGION=$(cloud-init query -f "{{region}}" 2>/dev/null)
+BB_ENV_EXTRAWHITE="AWS_METADATA_SERVICE_TIMEOUT AWS_METADATA_SERVICE_NUM_ATTEMPTS AWS_DEFAULT_REGION"
+EOF
+chmod 0644 @ETCDEFAULTDIR@/buildworker
+$AS_WORKER buildbot-worker create-worker -f  -k 60 --allow-shutdown=signal --maxdelay=10 --maxretries=12 --umask=0o22 "$workerdir" $MASTER "$WORKERNAME" "$WORKERSECRET"
+
+if [ -d "$workerdir/info" ]; then
+    echo "`lsb_release -ds`" > "$workerdir/info/host"
+    echo "$WORKERNAME for build master $MASTER ($(ec2metadata --instance-type))" >> "$workerdir/info/host"
+    echo "Autobuilder <builder@madison.systems>" > "$workerdir/info/admin"
+    [ -z "$workeruser" ] || chown $workeruser:$workeruser "$workerdir/info/admin" "$workerdir/info/host"
+fi

@@ -1,0 +1,23 @@
+[Unit]
+Description=buildbot worker
+Wants=systemd-user-sessions.service cloud-config.target remote-fs.target local-fs.target
+After=systemd-user-sessions.service network-online.target cloud-config.target remote-fs.target local-fs.target
+Requires=buildworker-setup.service
+After=buildworker-setup.service
+RequiresMountFor=@WORKERDIR@
+StartLimitInterval=30min
+StartLimitBurst=3
+StartLimitAction=reboot
+
+[Service]
+Type=simple
+EnvironmentFile=-@ETCDEFAULTDIR@/buildworker
+ExecStart=@BBWORKER_PREFIX@/bin/buildbot-worker start --nodaemon @WORKERDIR@
+KillSignal=SIGHUP
+Restart=on-failure
+RestartSec=30s
+TimeoutStartSec=600s
+User=@WORKERUSER@
+
+[Install]
+WantedBy=multi-user.target
