@@ -9,12 +9,12 @@ workeruser="$2"
 
 [ -n "$workerdir" ] || workerdir="@WORKERDIR@"
 [ -n "$workeruser" ] || workeruser="@WORKERUSER@"
-if [ ! -e /run/buildworker-settings ]; then
+if [ ! -e /run/buildworker/settings ]; then
     echo "Missing buildworker settings from master" >&2
     exit 1
 fi
 
-. /run/buildworker-settings
+. /run/buildworker/settings
 
 [ -d "$workerdir" ] || mkdir -p "$workerdir"
 [ -z "$workeruser" ] || chown -R $workeruser:$workeruser "$workerdir"
