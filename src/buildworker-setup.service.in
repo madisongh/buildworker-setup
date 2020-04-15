@@ -2,7 +2,7 @@
 Description=buildbot worker setup
 Wants=cloud-config.target remote-fs.target local-fs.target
 After=cloud-config.target remote-fs.target local-fs.target
-RequiresMountFor=@WORKERDIR@
+RequiresMountsFor=@WORKERDIR@
 
 [Service]
 Type=oneshot

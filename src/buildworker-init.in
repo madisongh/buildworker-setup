@@ -16,13 +16,8 @@ fi
 
 . /run/buildworker-settings
 
-[ -d "$workderdir" ] || mkdir -p "$workderdir"
-if [ -n "$workeruser" ]; then
-    chown -R $workeruser:$workeruser "$workderdir"
-    AS_WORKER="su -l $workeruser --"
-else
-    AS_WORKER=
-fi
+[ -d "$workerdir" ] || mkdir -p "$workerdir"
+[ -z "$workeruser" ] || chown -R $workeruser:$workeruser "$workerdir"
 
 rm -f @ETCDEFAULTDIR@/buildworker
 cat > @ETCDEFAULTDIR@/buildworker <<EOF
@@ -33,7 +28,12 @@ AWS_DEFAULT_REGION=$(cloud-init query -f "{{region}}" 2>/dev/null)
 BB_ENV_EXTRAWHITE="AWS_METADATA_SERVICE_TIMEOUT AWS_METADATA_SERVICE_NUM_ATTEMPTS AWS_DEFAULT_REGION"
 EOF
 chmod 0644 @ETCDEFAULTDIR@/buildworker
-$AS_WORKER buildbot-worker create-worker -f  -k 60 --allow-shutdown=signal --maxdelay=10 --maxretries=12 --umask=0o22 "$workerdir" $MASTER "$WORKERNAME" "$WORKERSECRET"
+cmd="buildbot-worker create-worker -f  -k 60 --allow-shutdown=signal --maxdelay=10 --maxretries=12 --umask=0o22 \"$workerdir\" $MASTER \"$WORKERNAME\" \"$WORKERSECRET\""
+if [ -n "$workeruser" ]; then
+    su -l $workeruser -c "$cmd"
+else
+    $cmd
+fi
 
 if [ -d "$workerdir/info" ]; then
     echo "`lsb_release -ds`" > "$workerdir/info/host"
