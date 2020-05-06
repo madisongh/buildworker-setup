@@ -28,7 +28,7 @@ AWS_DEFAULT_REGION=$(cloud-init query -f "{{region}}" 2>/dev/null)
 BB_ENV_EXTRAWHITE="AWS_METADATA_SERVICE_TIMEOUT AWS_METADATA_SERVICE_NUM_ATTEMPTS AWS_DEFAULT_REGION"
 EOF
 chmod 0644 @ETCDEFAULTDIR@/buildworker
-cmd="buildbot-worker create-worker -f  -k 60 --allow-shutdown=signal --maxdelay=10 --maxretries=12 --umask=0o22 \"$workerdir\" $MASTER \"$WORKERNAME\" \"$WORKERSECRET\""
+cmd="buildbot-worker create-worker -f  -k 60 --maxdelay=10 --maxretries=12 --umask=0o22 \"$workerdir\" $MASTER \"$WORKERNAME\" \"$WORKERSECRET\""
 if [ -n "$workeruser" ]; then
     su -l $workeruser -c "$cmd"
 else
