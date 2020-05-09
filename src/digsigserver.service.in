@@ -1,0 +1,20 @@
+[Unit]
+Description=signing server
+Before=buildworker.service
+
+[Service]
+RuntimeDirectory=digsig-work
+RuntimeDirectoryMode=0700
+Environment="TMPDIR=%t/digsig-work"
+Environment="TEMP=%t/digsig-work"
+Environment="TMP=%t/digsig-work"
+Environment="DIGSIGSERVER_KEYFILE_URI=@KEYFILE_URI@
+Environment="DIGSIGSERVER_RESPONSE_TIMEOUT=600"
+Environment="DIGSIGSERVER_LOG_LEVEL=DEBUG"
+ExecStartPre=/bin/bash -c env
+ExecStart=@DIGSIG_PREFIX@/bin/digsigserver -a 127.0.0.1
+User=@WORKERUSER@
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

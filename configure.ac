@@ -3,9 +3,9 @@ dnl configure.ac - autoconf script for buildworker-setup
 dnl
 dnl Copyright (c) 2020 Matthew Madison
 dnl
-AC_INIT([buildworker-setup], [0.1.0])
+AC_INIT([buildworker-setup], [0.2.0])
 AC_DEFINE([BUILDWORKER_SETUP_VERSION_MAJOR], [0], [Major version])
-AC_DEFINE([BUILDWORKER_SETUP_VERSION_MINOR], [1], [Minor version])
+AC_DEFINE([BUILDWORKER_SETUP_VERSION_MINOR], [2], [Minor version])
 AC_DEFINE([BUILDWORKER_SETUP_VERSION_MAINT], [0], [Maintenance level])
 AM_INIT_AUTOMAKE([subdir-objects foreign])
 AM_SILENT_RULES([yes])
@@ -36,6 +36,16 @@ AC_ARG_WITH([buildbot-worker-prefix],
     [], [with_buildbot_worker_prefix=/usr])
 AC_SUBST([BBWORKER_PREFIX], [$with_buildbot_worker_prefix])
 
+AC_ARG_WITH([digsig-prefix],
+    AS_HELP_STRING([--with-digsig-prefix=PATH], [location of digsigserver package]),
+    [], [with_digsig_prefix=/usr])
+AC_SUBST([DIGSIG_PREFIX], [$with_digsig_prefix])
+
+AC_ARG_WITH([keyfile-uri],
+    AS_HELP_STRING([--with-keyfile-uri=NAME], [URL for digsigserver keys]),
+    [], [with_keyfile_uri=file:///usr/share/digsigserver/keyfiles])
+AC_SUBST([KEYFILE_URI], [$with_keyfile_uri])
+
 AC_ARG_WITH([etcdefaultdir],
     AS_HELP_STRING([--with-etcdefaultdir=PATH], [path to directory to hold build worker environment variable settings]),
     [], [with_etcdefaultdir=/etc/default])
@@ -51,5 +61,5 @@ AS_IF([test "x$with_systemdsystemunitdir" = "xcheck"],
     [with_systemdsystemunitdir=`$PKG_CONFIG --variable systemdsystemunitdir systemd`])
 AC_SUBST([systemdsystemunitdir], [$with_systemdsystemunitdir])
 
-AC_CONFIG_FILES(Makefile src/buildworker-init src/buildworker.service src/buildworker-setup.service)
+AC_CONFIG_FILES(Makefile src/buildworker-init src/buildworker.service src/buildworker-setup.service src/digsigserver.service)
 AC_OUTPUT
