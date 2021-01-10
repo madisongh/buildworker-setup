@@ -37,7 +37,7 @@ fi
 
 if [ -d "$workerdir/info" ]; then
     echo "`lsb_release -ds`" > "$workerdir/info/host"
-    echo "$WORKERNAME for build master $MASTER ($(ec2metadata --instance-type))" >> "$workerdir/info/host"
+    echo "$WORKERNAME for build master $MASTER ($(ec2metadata --instance-type) in $(ec2metadata --availability-zone))" >> "$workerdir/info/host"
     echo "Autobuilder <builder@madison.systems>" > "$workerdir/info/admin"
     [ -z "$workeruser" ] || chown $workeruser:$workeruser "$workerdir/info/admin" "$workerdir/info/host"
 fi
