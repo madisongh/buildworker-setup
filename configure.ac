@@ -1,16 +1,16 @@
 dnl
 dnl configure.ac - autoconf script for buildworker-setup
 dnl
-dnl Copyright (c) 2020,2021 Matthew Madison
+dnl Copyright (c) 2020-2022 Matthew Madison
 dnl
-AC_INIT([buildworker-setup], [0.2.2])
+AC_INIT([buildworker-setup], [0.3.0])
 AC_DEFINE([BUILDWORKER_SETUP_VERSION_MAJOR], [0], [Major version])
-AC_DEFINE([BUILDWORKER_SETUP_VERSION_MINOR], [2], [Minor version])
-AC_DEFINE([BUILDWORKER_SETUP_VERSION_MAINT], [2], [Maintenance level])
+AC_DEFINE([BUILDWORKER_SETUP_VERSION_MINOR], [3], [Minor version])
+AC_DEFINE([BUILDWORKER_SETUP_VERSION_MAINT], [0], [Maintenance level])
 AM_INIT_AUTOMAKE([subdir-objects foreign])
 AM_SILENT_RULES([yes])
 AC_COPYRIGHT([
-Copyright (c) 2020,20201 Matthew Madison
+Copyright (c) 2020-2021 Matthew Madison
 ])
 AC_CONFIG_MACRO_DIR([m4])
 
