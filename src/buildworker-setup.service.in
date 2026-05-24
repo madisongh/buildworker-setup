@@ -6,8 +6,11 @@ RequiresMountsFor=@WORKERDIR@
 
 [Service]
 Type=oneshot
-ExecStart=@sbindir@/buildworker-init @WORKERDIR@ @WORKERUSER@
+ExecStart=+@sbindir@/buildworker-init @WORKERDIR@ @WORKERUSER@
+ExecStart=@sbindir@/buildworker-environment-setup
 RemainAfterExit=yes
+User=@WORKERUSER@
+PAMName=login
 
 [Install]
 WantedBy=multi-user.target

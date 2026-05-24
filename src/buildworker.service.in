@@ -18,6 +18,7 @@ Restart=on-failure
 RestartSec=30s
 TimeoutStartSec=600s
 User=@WORKERUSER@
+PAMName=login
 
 [Install]
 WantedBy=multi-user.target
