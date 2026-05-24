@@ -1,7 +1,11 @@
 #!/bin/sh
 set -e
+
+workerdir="$1"
+[ -n "$workerdir" ] || workerdir="@WORKERDIR@"
+
 mkdir -p $HOME/.local/bin
-echo "$PATH" | grep -q "$HOME/\.local/bin" || PATH="$HOME/.local.bin:$PATH"
+echo "$PATH" | grep -q "$HOME/\.local/bin" || PATH="$HOME/.local/bin:$PATH"
 pipx install buildbot-worker
 pipx install https://github.com/madisongh/buildworker-scripts/releases/download/v@WORKER_SCRIPTS_VERSION_FULL@/buildworker_scripts-@WORKER_SCRIPTS_VERSION@-py3-none-any.whl
 pipx install https://github.com/madisongh/git-credential-aws-secrets/releases/download/v@WORKER_GCAS_VERSION@/git_credential_aws_secrets-@WORKER_GCAS_VERSION@-py3-none-any.whl
@@ -10,3 +14,11 @@ install -D -m 0644 -t $HOME/.config/systemd/user ${prefix}/share/buildworker/dig
 systemctl --user daemon-reload
 systemctl --user enable digsigserver.service
 systemctl --user start digsigserver.service
+. /run/buildworker/settings
+buildbot-worker create-worker -f  -k 60 --maxdelay=10 --maxretries=12 --umask=0o22 "$workerdir" "$MASTER" "$WORKERNAME" "$WORKERSECRET"
+if [ -d "$workerdir/info" ]; then
+    echo "`lsb_release -ds`" > "$workerdir/info/host"
+    echo "$WORKERNAME for build master $MASTER ($(ec2metadata --instance-type) in $(ec2metadata --availability-zone))" >> "$workerdir/info/host"
+    echo "Autobuilder <builder@madison.systems>" > "$workerdir/info/admin"
+    [ -z "$USER" ] || chown $USER:$USER "$workerdir/info/admin" "$workerdir/info/host"
+fi

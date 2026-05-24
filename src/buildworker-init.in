@@ -28,16 +28,3 @@ AWS_DEFAULT_REGION=$(cloud-init query -f "{{region}}" 2>/dev/null)
 BB_ENV_PASSTHROUGH_ADDITIONS="AWS_METADATA_SERVICE_TIMEOUT AWS_METADATA_SERVICE_NUM_ATTEMPTS AWS_DEFAULT_REGION"
 EOF
 chmod 0644 @ETCDEFAULTDIR@/buildworker
-cmd="buildbot-worker create-worker -f  -k 60 --maxdelay=10 --maxretries=12 --umask=0o22 \"$workerdir\" $MASTER \"$WORKERNAME\" \"$WORKERSECRET\""
-if [ -n "$workeruser" ]; then
-    su -l $workeruser -c "$cmd"
-else
-    $cmd
-fi
-
-if [ -d "$workerdir/info" ]; then
-    echo "`lsb_release -ds`" > "$workerdir/info/host"
-    echo "$WORKERNAME for build master $MASTER ($(ec2metadata --instance-type) in $(ec2metadata --availability-zone))" >> "$workerdir/info/host"
-    echo "Autobuilder <builder@madison.systems>" > "$workerdir/info/admin"
-    [ -z "$workeruser" ] || chown $workeruser:$workeruser "$workerdir/info/admin" "$workerdir/info/host"
-fi

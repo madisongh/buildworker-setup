@@ -1,0 +1,2 @@
+#!/bin/sh
+buildbot-worker start --nodaemon @WORKERDIR@

@@ -12,12 +12,13 @@ StartLimitAction=reboot
 [Service]
 Type=simple
 EnvironmentFile=-@ETCDEFAULTDIR@/buildworker
-ExecStart=@BBWORKER_PREFIX@/bin/buildbot-worker start --nodaemon @WORKERDIR@
+ExecStart=${exec_prefix}/sbin/run-buildbot-worker
 KillSignal=SIGHUP
 Restart=on-failure
 RestartSec=30s
 TimeoutStartSec=600s
 User=@WORKERUSER@
+WorkingDirectory=~
 PAMName=login
 
 [Install]

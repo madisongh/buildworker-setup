@@ -9,9 +9,10 @@ SUBDIRS =
 DIST_SUBDIRS =
 
 EXTRA_DIST = src/buildworker-init.in src/buildworker.service.in src/buildworker-setup.service.in \
-             src/digsigserver.service.in src/buildworker-environment-setup.in
+             src/digsigserver.service.in src/buildworker-environment-setup.in \
+             src/run-buildbot-worker.in src/run-digsigserver.in
 
-dist_sbin_SCRIPTS = buildworker-init buildworker-environment-setup
+dist_sbin_SCRIPTS = buildworker-init buildworker-environment-setup run-buildbot-worker run-digsigserver
 systemdsystemunit_DATA = buildworker-setup.service buildworker.service
 templatedir = $(prefix)/share/buildworker
 template_DATA = digsigserver.service
@@ -19,6 +20,10 @@ template_DATA = digsigserver.service
 buildworker-init: src/buildworker-init
 	sed -e's,\$${prefix},$(prefix),g' -e's,$${exec_prefix},$(exec_prefix),g' < $< >$@
 buildworker-environment-setup: src/buildworker-environment-setup
+	sed -e's,\$${prefix},$(prefix),g' -e's,$${exec_prefix},$(exec_prefix),g' < $< >$@
+run-buildbot-worker: src/run-buildbot-worker
+	sed -e's,\$${prefix},$(prefix),g' -e's,$${exec_prefix},$(exec_prefix),g' < $< >$@
+run-digsigserver: src/run-digsigserver
 	sed -e's,\$${prefix},$(prefix),g' -e's,$${exec_prefix},$(exec_prefix),g' < $< >$@
 buildworker-setup.service: src/buildworker-setup.service
 	sed -e's,\$${prefix},$(prefix),g' -e's,$${exec_prefix},$(exec_prefix),g' < $< >$@

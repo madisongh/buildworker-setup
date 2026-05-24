@@ -7,11 +7,10 @@ RuntimeDirectoryMode=0700
 Environment="TMPDIR=%t/digsig-work"
 Environment="TEMP=%t/digsig-work"
 Environment="TMP=%t/digsig-work"
-Environment="PATH=%h/.local/bin:/usr/local/sinb:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin"
 Environment="DIGSIGSERVER_KEYFILE_URI=@KEYFILE_URI@"
 Environment="DIGSIGSERVER_RESPONSE_TIMEOUT=600"
 Environment="DIGSIGSERVER_LOG_LEVEL=DEBUG"
-ExecStart=%h/.local/bin/digsigserver -a 127.0.0.1
+ExecStart=${exec_prefix}/sbin/run-digsigserver
 Restart=on-failure
 
 [Install]

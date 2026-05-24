@@ -1,0 +1,2 @@
+#!/bin/sh
+$HOME/.local/bin/digsigserver -a 127.0.0.1

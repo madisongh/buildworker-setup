@@ -3,10 +3,10 @@ dnl configure.ac - autoconf script for buildworker-setup
 dnl
 dnl Copyright (c) 2020-2026, Matthew Madison
 dnl
-AC_INIT([buildworker-setup], [0.5.0])
+AC_INIT([buildworker-setup], [0.5.1])
 AC_DEFINE([BUILDWORKER_SETUP_VERSION_MAJOR], [0], [Major version])
 AC_DEFINE([BUILDWORKER_SETUP_VERSION_MINOR], [5], [Minor version])
-AC_DEFINE([BUILDWORKER_SETUP_VERSION_MAINT], [0], [Maintenance level])
+AC_DEFINE([BUILDWORKER_SETUP_VERSION_MAINT], [1], [Maintenance level])
 AM_INIT_AUTOMAKE([subdir-objects foreign])
 AM_SILENT_RULES([yes])
 AC_COPYRIGHT([
@@ -31,11 +31,6 @@ AC_ARG_WITH([workeruser],
     AS_HELP_STRING([--with-workeruser=NAME], [username of build worker]),
     [], [with_workeruser=builder])
 AC_SUBST([WORKERUSER], [$with_workeruser])
-
-AC_ARG_WITH([buildbot-worker-prefix],
-    AS_HELP_STRING([--with-buildbot-worker-prefix=PATH], [location of buildbot-worker package]),
-    [], [with_buildbot_worker_prefix=/usr])
-AC_SUBST([BBWORKER_PREFIX], [$with_buildbot_worker_prefix])
 
 AC_ARG_WITH([scripts-version],
     AS_HELP_STRING([--with-scripts-version=VER], [version of buildworker-scripts package to install]),
@@ -74,5 +69,5 @@ AS_IF([test "x$with_systemdsystemunitdir" = "xcheck"],
     [with_systemdsystemunitdir=`$PKG_CONFIG --variable systemdsystemunitdir systemd`])
 AC_SUBST([systemdsystemunitdir], [$with_systemdsystemunitdir])
 
-AC_CONFIG_FILES(Makefile src/buildworker-init src/buildworker-environment-setup src/buildworker.service src/buildworker-setup.service src/digsigserver.service)
+AC_CONFIG_FILES(Makefile src/buildworker-init src/buildworker-environment-setup src/run-buildbot-worker src/run-digsigserver src/buildworker.service src/buildworker-setup.service src/digsigserver.service)
 AC_OUTPUT
