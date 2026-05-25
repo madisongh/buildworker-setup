@@ -1,0 +1,5 @@
+pipx install https://github.com/madisongh/digsigserver/releases/download/v@WORKER_DIGSIG_VERSION@/digsigserver-@WORKER_DIGSIG_VERSION@-py3-none-any.whl
+install -D -m 0644 -t $HOME/.config/systemd/user ${prefix}/share/buildworker/digsigserver.service
+systemctl --user daemon-reload
+systemctl --user enable digsigserver.service
+systemctl --user start digsigserver.service

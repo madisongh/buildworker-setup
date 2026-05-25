@@ -3,10 +3,10 @@ dnl configure.ac - autoconf script for buildworker-setup
 dnl
 dnl Copyright (c) 2020-2026, Matthew Madison
 dnl
-AC_INIT([buildworker-setup], [0.5.2])
+AC_INIT([buildworker-setup], [0.5.3])
 AC_DEFINE([BUILDWORKER_SETUP_VERSION_MAJOR], [0], [Major version])
 AC_DEFINE([BUILDWORKER_SETUP_VERSION_MINOR], [5], [Minor version])
-AC_DEFINE([BUILDWORKER_SETUP_VERSION_MAINT], [2], [Maintenance level])
+AC_DEFINE([BUILDWORKER_SETUP_VERSION_MAINT], [3], [Maintenance level])
 AM_INIT_AUTOMAKE([subdir-objects foreign])
 AM_SILENT_RULES([yes])
 AC_COPYRIGHT([
@@ -44,6 +44,12 @@ AC_ARG_WITH([git-aws-secrets-version],
     [], [with_git_aws_secrets_version=0.0.2])
 AC_SUBST([WORKER_GCAS_VERSION], [$with_git_aws_secrets_version])
 
+AC_ARG_ENABLE([digsigserver],
+    AS_HELP_STRING([--enable-digisgserver], [enable use of digsigserver, default YES]),
+    [enable_digsig=$enableval],
+    [enable_digsig=yes])
+AM_CONDITIONAL(DIGSIG_ENABLED, [test "$enable_digsig" = "yes"])
+
 AC_ARG_WITH([digsigserver-version],
     AS_HELP_STRING([--with-digsigserver-version=VER], [version of digsigserver package to install]),
     [], [with_digsigserver_version=0.16.0])
@@ -69,5 +75,5 @@ AS_IF([test "x$with_systemdsystemunitdir" = "xcheck"],
     [with_systemdsystemunitdir=`$PKG_CONFIG --variable systemdsystemunitdir systemd`])
 AC_SUBST([systemdsystemunitdir], [$with_systemdsystemunitdir])
 
-AC_CONFIG_FILES(Makefile src/buildworker-init src/buildworker-environment-setup src/run-buildbot-worker src/run-digsigserver src/buildworker.service src/buildworker-setup.service src/digsigserver.service)
+AC_CONFIG_FILES([Makefile src/buildworker-init src/buildworker-environment-setup src/run-buildbot-worker src/digsig-setup src/run-digsigserver src/buildworker.service src/buildworker-setup.service src/digsigserver.service])
 AC_OUTPUT
